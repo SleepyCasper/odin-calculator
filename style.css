@@ -1,0 +1,108 @@
+:root {
+    --button-color: #1d3d4c;
+    --button-color-hover: #b7d0dc;
+    --operator-color: #265368;
+    --operator-color-hover: #e2821c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* outline: solid 1px red; */
+}
+
+body {
+    font-family: "Outfit", sans-serif;
+    background-color: #D3E7F0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.title {
+    margin-top: 2rem;
+}
+
+.display {
+    font-size: 28px;
+    font-weight: 500;
+    color: rgb(35, 35, 35);
+    border-radius: 0.8rem;
+    background-color: #a9cbda;
+    height: 5rem;
+    margin: 1rem;
+    margin-bottom: 0;
+    padding: 0.8rem;
+    align-content: center;
+    text-align: right;
+}
+
+.container-main {
+    border-radius: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #09242D;
+    box-shadow: rgb(80, 81, 83) 0 0.7rem 2rem;
+}
+
+.container-buttons {
+    --container-width: 17rem; /* CSS custom property for easy adjustment */
+    --gap-size: 0.8rem;
+    --button-size: calc((var(--container-width) - 3 * var(--gap-size)) / 4);
+    
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--gap-size);
+    margin: 1rem;
+    width: var(--container-width);
+}
+
+.button {
+    font-family: "Outfit", sans-serif;
+    font-size: 18px;
+    width: var(--button-size);
+    height: var(--button-size); /* Square buttons */
+    flex-shrink: 0; /* Prevent shrinking */
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.button:hover {
+    background-color: var(--button-color-hover);
+}
+
+.button.number:hover {
+    color: var(--button-color);
+}
+
+.button.operator {
+    background-color: var(--operator-color);
+}
+
+.button.operator:hover {
+    background-color: var(--operator-color-hover);
+}
+
+.button.equal {
+    /* Zero spans 2 columns: 2 buttons + 1 gap between them */
+    width: calc(2 * var(--button-size) + var(--gap-size));
+    background-color: var(--operator-color);
+}
+
+.button.equal:hover {
+    background-color: rgb(192, 28, 28);
+}
+
+.button.clear:hover,
+.button.allclear:hover {
+    background-color: rgb(65, 161, 107);
+}
