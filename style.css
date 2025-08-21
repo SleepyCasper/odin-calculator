@@ -74,10 +74,18 @@ body {
     color: white;
     border-radius: 0.5rem;
     border: none;
+    transition: transform var(--transition-duration);
 }
 
 .button:hover {
+    --transition-duration: 0.2s;
+    transform: scale(1.1);
     background-color: var(--button-color-hover);
+}
+
+.button:active {
+    --transition-duration: 0.3s;
+    transform: scale(0.95);
 }
 
 .button.number:hover {

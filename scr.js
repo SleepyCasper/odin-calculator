@@ -1,3 +1,8 @@
+// TO DO:
+// - Round results
+// - decimal
+// - toggle
+
 const digitButtons = {
     0: document.getElementById('0'),
     1: document.getElementById('1'),
@@ -28,58 +33,76 @@ const specialButtons = {
 
 const display = document.querySelector('.display');
 
-// let displayOutput = "";
-
-let number1 = 0;
-let number2 = 0;
+let displayOutput = "";
+let number1 = "";
+let number2 = "";
 let result = 0;
 let currentOperator = null;
 let currentNumber = "";
 
 // Functions for math operations
-function add (a, b) {
-    return result = a + b;
+function add(a, b) {
+    return a + b;
 }
 
-function subtract (a, b) {
-    return result = a - b;
+function subtract(a, b) {
+    return a - b;
 }
 
-function multiply (a, b) {
-    return result = a * b;
+function multiply(a, b) {
+    return a * b;
 }
 
-function divide (a, b) {
+function divide(a, b) {
     if (b === 0) {
-        return result = "Error";
+        return "Error";
     }
     return a / b;
 }
 
 // Function for handling operation function based on what operator is used
-function operate (a, b, operator) {
+function operate(a, b, operator) {
+    let result = 0;
     switch (operator) {
         case '+':
-            return add(a, b);
+            result = add(a, b);
             break;
         case '-':
-            return subtract(a, b);
+            result = subtract(a, b);
             break;
         case 'x':
-            return multiply(a, b);
+            result = multiply(a, b);
             break;
         case '÷':
-            return divide(a, b);
+            result = divide(a, b);
+            if (result === "Error") {
+                reset();  // Reset here if division by zero
+                display.textContent = "Error";
+                return "Error";
+            }
             break;
         default:
             return "Error";
     }
+    return result;
+}
+
+function reset() {
+    currentOperator = null;
+    currentNumber = "";
+    number1 = ""; 
+    number2 = "";
+    result = 0;
+    display.textContent = "";
+    console.log("Calculator reset");
 }
 
 //Event listener for digit buttons
 Object.keys(digitButtons).forEach(digit => {
     digitButtons[digit].addEventListener('click', () => {
         currentNumber += digit;
+        displayOutput = currentNumber;
+        display.textContent = displayOutput;
 
         console.log(`Digit ${digit} clicked`);
         console.log(currentNumber);
@@ -89,8 +112,35 @@ Object.keys(digitButtons).forEach(digit => {
 //Event listener for operator buttons
 Object.keys(operatorButtons).forEach(opName => {
     operatorButtons[opName].addEventListener('click', () => {
-        number1 = Number(currentNumber);
-        console.log(`Current number ${currentNumber} became the number1 ${number1}`);
+        // When pressing multiple operators in a row
+        if (number1 !== "" && currentOperator !== null && currentNumber === "") {
+            // Just replace the operator, don't calculate
+            currentOperator = operatorButtons[opName].textContent;
+            console.log(`Operator replaced with: ${currentOperator}`);
+            return; // Exit early
+        }
+
+        // For chaining
+        if (number1 !== "" && currentOperator !== null && currentNumber !== "") {
+            number2 = Number(currentNumber);
+            console.log(`Current number ${currentNumber} became the number2 ${number2}`);
+
+            result = operate(number1, number2, currentOperator);
+            
+            if (result === "Error") {
+                return; // Stop execution if error
+            }
+
+            console.log(`Result is ${result}`);
+            number1 = result;
+            display.textContent = result;
+        } else if (currentNumber !== "") {
+            number1 = Number(currentNumber);  
+            console.log(`Current number ${currentNumber} became the number1 ${number1}`);
+        } else {    //If pressing operator in the start
+            console.log("No number entered yet, ignoring operator");
+            return;
+        }
 
         currentOperator = operatorButtons[opName].textContent;
         console.log(`${opName} operator selected: ${currentOperator}`);
@@ -100,3 +150,27 @@ Object.keys(operatorButtons).forEach(opName => {
     })
 })
 
+specialButtons.allclear.addEventListener('click', reset);
+
+specialButtons.clear.addEventListener('click', () => {
+    currentNumber = currentNumber.toString().slice(0, -1);
+    console.log(`You deleted the last digit! current number is ${currentNumber}`)
+    display.textContent = currentNumber || "0"; // Show 0 if empty
+})
+
+specialButtons.equal.addEventListener('click', () => {
+    if (currentOperator && currentNumber !== "") {
+        number2 = Number(currentNumber);
+        console.log(`Current number ${currentNumber} became the number2 ${number2}`);
+
+        result = operate(number1, number2, currentOperator);
+        console.log(`Result is ${result}`);
+
+        number1 = result;
+        display.textContent = result;
+        currentOperator = null;
+        currentNumber = result;
+        console.log("Ready for next operation")
+        console.log(`number1 is ${number1}`)
+    } 
+})
