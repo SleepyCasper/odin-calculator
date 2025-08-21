@@ -103,6 +103,7 @@ body {
 }
 
 .button.clear:hover,
-.button.allclear:hover {
+.button.allclear:hover,
+.button.toggle:hover {
     background-color: rgb(65, 161, 107);
 }
