@@ -1,8 +1,3 @@
-// TO DO:
-// - Round results
-// - decimal
-// - toggle
-
 const digitButtons = {
     0: document.getElementById('0'),
     1: document.getElementById('1'),
@@ -39,6 +34,7 @@ let number2 = "";
 let result = 0;
 let currentOperator = null;
 let currentNumber = "";
+let isError = false;
 
 // Functions for math operations
 function add(a, b) {
@@ -55,6 +51,7 @@ function multiply(a, b) {
 
 function divide(a, b) {
     if (b === 0) {
+        isError = true;
         return "Error";
     }
     return a / b;
@@ -75,6 +72,17 @@ function formatForDisplay(number) {
     return number;
 }
 
+function reset() {
+    currentOperator = null;
+    currentNumber = "";
+    number1 = ""; 
+    number2 = "";
+    result = 0;
+    isError = false;
+    display.textContent = "";
+    console.log("Calculator reset");
+}
+
 // Function for handling operation function based on what operator is used
 function operate(a, b, operator) {
     let result = 0;
@@ -93,6 +101,7 @@ function operate(a, b, operator) {
             if (result === "Error") {
                 reset();  // Reset here if division by zero
                 display.textContent = "Error";
+                isError = true;
                 return "Error";
             }
             break;
@@ -102,19 +111,13 @@ function operate(a, b, operator) {
     return formatForDisplay(result);
 }
 
-function reset() {
-    currentOperator = null;
-    currentNumber = "";
-    number1 = ""; 
-    number2 = "";
-    result = 0;
-    display.textContent = "";
-    console.log("Calculator reset");
-}
 
 //Event listener for digit buttons
 Object.keys(digitButtons).forEach(digit => {
     digitButtons[digit].addEventListener('click', () => {
+        if (isError) {
+            reset();
+        }
         currentNumber += digit;
         displayOutput = formatForDisplay(Number(currentNumber));
         display.textContent = displayOutput;
@@ -127,6 +130,12 @@ Object.keys(digitButtons).forEach(digit => {
 //Event listener for operator buttons
 Object.keys(operatorButtons).forEach(opName => {
     operatorButtons[opName].addEventListener('click', () => {
+        // Prevent operations when in error state
+        if (isError) {
+            console.log("Calculator in error state, ignoring operator");
+            return;
+        }
+
         // When pressing multiple operators in a row
         if (number1 !== "" && currentOperator !== null && currentNumber === "") {
             // Just replace the operator, don't calculate
@@ -189,3 +198,34 @@ specialButtons.equal.addEventListener('click', () => {
         console.log(`number1 is ${number1}`)
     } 
 })
+
+function toggle () {
+    if (currentNumber === "" || currentNumber === "0") {
+        return;
+    }
+    currentNumber = (Number(currentNumber) * -1).toString();
+    displayOutput = formatForDisplay(Number(currentNumber));
+    display.textContent = displayOutput;
+
+    console.log(`Number toggled to: ${currentNumber}`);
+}
+
+specialButtons.toggle.addEventListener('click', toggle);
+
+function decimal () {
+    if (currentNumber === "") {
+        currentNumber = "0.";
+        display.textContent = currentNumber;
+        return;
+    }
+    
+    if (currentNumber.includes(".") || result == "Error") {
+        return;
+    }
+
+    currentNumber += ".";
+    displayOutput = formatForDisplay(currentNumber);
+    display.textContent = displayOutput;
+}
+
+specialButtons.decimal.addEventListener('click', decimal);
