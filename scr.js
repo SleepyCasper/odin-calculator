@@ -60,6 +60,21 @@ function divide(a, b) {
     return a / b;
 }
 
+// Handle big result numbers
+function formatForDisplay(number) {
+    if (typeof number !== 'number') return number;
+
+    number = parseFloat(number.toFixed(10));
+
+    let str = number.toString();
+
+    if (str.length > 12) {
+        return number.toExponential(6);
+    }
+
+    return number;
+}
+
 // Function for handling operation function based on what operator is used
 function operate(a, b, operator) {
     let result = 0;
@@ -84,7 +99,7 @@ function operate(a, b, operator) {
         default:
             return "Error";
     }
-    return result;
+    return formatForDisplay(result);
 }
 
 function reset() {
@@ -101,7 +116,7 @@ function reset() {
 Object.keys(digitButtons).forEach(digit => {
     digitButtons[digit].addEventListener('click', () => {
         currentNumber += digit;
-        displayOutput = currentNumber;
+        displayOutput = formatForDisplay(Number(currentNumber));
         display.textContent = displayOutput;
 
         console.log(`Digit ${digit} clicked`);
