@@ -229,3 +229,49 @@ function decimal () {
 }
 
 specialButtons.decimal.addEventListener('click', decimal);
+
+// Keyboard support
+
+document.addEventListener ('keydown', (event) => {
+    const key = event.key;
+
+    if (key >= '0' && key <= '9') {
+        digitButtons[key].click(); 
+    }
+
+    switch(key) {
+        case "-" :
+            operatorButtons.subtract.click();
+            break;
+        case "+" :
+            operatorButtons.add.click();
+            break;
+        case "*" :
+            operatorButtons.multiply.click();
+            break;
+        case "/" :
+            event.preventDefault();
+            operatorButtons.divide.click();
+            break;
+        case "Escape" :
+        case "c":
+        case "C":
+            specialButtons.allclear.click();
+            break;
+        case "Backspace":
+            specialButtons.clear.click();
+            break;
+        case ".":
+            specialButtons.decimal.click();
+            break;
+        case "=":
+        case "Enter":
+            specialButtons.equal.click();
+            break;
+        case "n":
+        case "N":
+            specialButtons.toggle.click();
+            break;
+
+    }
+})
